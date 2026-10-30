@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-"""Render the keyed manuscript into a numbered Markdown and HTML preview."""
+"""Render the keyed v0.3 manuscript into numbered Markdown and HTML."""
 
 from __future__ import annotations
 
@@ -10,10 +10,10 @@ import markdown
 
 
 ROOT = Path(__file__).resolve().parents[1]
-SOURCE = Path(__file__).with_name("manuscript_electronics_v0.2.md")
+SOURCE = Path(__file__).with_name("manuscript_electronics_v0.3.md")
 BIB = ROOT / "references" / "references_cited.bib"
-NUMBERED = Path(__file__).with_name("manuscript_electronics_v0.2_numbered.md")
-HTML = Path(__file__).with_name("manuscript_electronics_v0.2_preview.html")
+NUMBERED = Path(__file__).with_name("manuscript_electronics_v0.3_numbered.md")
+HTML = Path(__file__).with_name("manuscript_electronics_v0.3_preview.html")
 
 
 def parse_bib(text: str) -> dict[str, dict[str, str]]:
@@ -103,7 +103,7 @@ def main() -> None:
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>NILM manuscript draft v0.2</title>
+<title>NILM manuscript draft v0.3</title>
 <style>
 body{font-family:Georgia,"Times New Roman",serif;max-width:980px;margin:40px auto;
 padding:0 28px;line-height:1.62;color:#202124}

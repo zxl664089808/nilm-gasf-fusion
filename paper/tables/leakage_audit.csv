@@ -1,0 +1,7 @@
+condition,image_variant,split_protocol,top_rows_only,images_per_split,epochs,seed,test_accuracy,test_macro_f1
+A,title,image,,5200,60,42,0.650385,0.609080
+B,clean,image,,5200,60,42,0.670962,0.624889
+C,title,grouped,,5200,60,42,0.684038,0.643114
+D,clean,grouped,,5200,60,42,0.667885,0.616985
+E,title,image,12,5200,40,42,0.878269,0.874483
+F,clean,image,12,5200,40,42,0.764231,0.730247

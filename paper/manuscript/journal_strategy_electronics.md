@@ -1,51 +1,63 @@
-# Journal strategy after representation controls
+# Journal strategy
 
-## Evidence-driven positioning
+## Position of the v0.3 manuscript
 
-The matched experiments show that raw 3 x 500 V/I/P waveforms outperform the
-tested 64 x 64 GASF images on the 26-state task. The manuscript must therefore
-be positioned as a leakage-aware representation evaluation rather than as a
-claim that Gramian imaging improves accuracy.
+The manuscript is positioned as a leakage-aware electronic-signal recognition
+study with three components:
+
+- correction and audit of image-space label leakage;
+- source-grouped and device-disjoint evaluation;
+- compact GASF CNN and image-plus-physical-feature models for 11-class and
+  26-label tasks.
+
+The paper does not claim state-of-the-art performance or universal superiority
+of image representations. Its contributions are reproducibility, complementary
+representation analysis, and stable joint appliance/state recognition.
 
 ## First choice: Electronics (MDPI)
 
-Use this positioning only if the manuscript emphasizes:
+Fit:
 
-- high-frequency electronic-signal measurement;
-- matched raw-waveform, V-I, image, and physical-feature comparisons;
-- compact classifiers with approximately 0.1 million parameters;
-- leakage-aware validation and practical device-shift limitations.
+- high-frequency voltage/current measurement;
+- compact convolutional processing of electronic signals;
+- practical ON/OFF and appliance recognition;
+- interpretable electrical descriptors combined with learned features.
 
-The paper should state explicitly that GASF did not improve accuracy in the
-completed experiment. That negative result is a contribution only if supported
-by the matched protocol and full baselines.
+Required editorial controls:
+
+- distinguish recording-level and device-level generalization;
+- report class-specific failures rather than aggregate accuracy alone;
+- state that latency, memory, and energy consumption were not measured;
+- state that the task is event-aligned plug-load recognition, not arbitrary
+  aggregate-mains disaggregation.
 
 ## Alternative: Pattern Analysis and Applications
 
-This venue may fit the paper better if the central contribution is:
+This venue is appropriate if the paper emphasizes grouped pattern
+classification, representation comparison, seed stability, and class-level
+error analysis. The leakage audit and device-disjoint protocol would become
+more central than the electronics application.
 
-- representation comparison;
-- leakage-controlled pattern-classification methodology;
-- seed and device robustness;
-- class-specific error analysis.
+## Alternative: Signal, Image and Video Processing
 
-The risk is that the method combines established components. The benchmark and
-negative result must therefore be the main contribution.
+This venue is appropriate if the paper emphasizes image encoding of
+one-dimensional electrical signals, normalization effects, and compact CNN
+classification. The manuscript would need a stronger signal-processing and
+representation-focused introduction.
 
-## Alternative: Digital Signal Processing
+## Scope of the current submission
 
-This venue is suitable if the paper emphasizes:
+The v0.3 manuscript uses the committed and audited GASF experiments. Additional
+raw-waveform, V-I trajectory, and physical-only exploratory runs that remain
+outside the unified repository are not part of the submission claims. They can
+be added in a later revision only after code review, result verification, and
+integration into the same provenance-controlled repository.
 
-- raw sequence versus image-domain representation;
-- normalized V-I trajectory encoding;
-- amplitude loss caused by Gramian normalization;
-- comparison against physical descriptors and raw 1D CNNs.
+## Remaining submission work
 
-## Before submission
-
-1. Confirm ORCID records and the CRediT statement.
-2. Decide whether one full ResNet-18 capacity control is necessary.
-3. Add actual latency and memory measurements if an embedded or edge claim is
-   desired.
-4. Provide a code and data archive.
-5. Reformat the manuscript and references to the chosen journal template.
+1. Confirm ORCID records and CRediT allocation.
+2. Create a DOI-bearing repository archive.
+3. Convert the manuscript and vector figures to the current Electronics
+   template.
+4. Recheck every number against the final tagged repository revision.
+5. Upload the cover letter, manuscript, figures, and supplementary files.

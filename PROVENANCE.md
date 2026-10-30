@@ -27,11 +27,11 @@ as part of the submission pipeline in this snapshot.
 
 ## Paper snapshot
 
-The included manuscript is the restored intended draft:
+The current submission-candidate manuscript is:
 
-`paper/manuscript/manuscript_electronics_v0.2.md`
+`paper/manuscript/manuscript_electronics_v0.3.md`
 
-The unintended broad-comparison draft is retained only in the original local
-working directory at `D:\论文1\06_manuscript\archive\`. It is not included in
-this unified repository and is not the manuscript source used by
+Version 0.2 is retained as development history. The exploratory
+broad-comparison draft remains outside this unified repository at
+`D:\论文1\06_manuscript\archive` and is not the source used by
 `paper/manuscript/build_preview.py`.

@@ -1,0 +1,405 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>NILM manuscript draft v0.3</title>
+<style>
+body{font-family:Georgia,"Times New Roman",serif;max-width:980px;margin:40px auto;
+padding:0 28px;line-height:1.62;color:#202124}
+h1{font-size:2rem;line-height:1.25;border-bottom:2px solid #bbb;padding-bottom:.5rem}
+h2{margin-top:2.2rem;border-bottom:1px solid #ddd;padding-bottom:.25rem}
+h3{margin-top:1.5rem}
+table{border-collapse:collapse;width:100%;margin:1rem 0;font-size:.94rem}
+th,td{border:1px solid #bbb;padding:.42rem .55rem;vertical-align:top}
+th{background:#f3f3f3}
+code{background:#f4f4f4;padding:.1rem .25rem}
+img{display:block;max-width:100%;height:auto;margin:1.2rem auto}
+@media print{body{max-width:none;margin:12mm}h2{break-after:avoid}
+table,figure{break-inside:avoid}}
+</style>
+</head>
+<body>
+<h1>Leakage-Aware Multi-Physical GASF Imaging for Plug-Load Appliance and State Recognition</h1>
+<p><strong>Draft status:</strong> Version 0.3, Electronics submission candidate. ORCID identifiers and the final public-archive DOI remain to be supplied before submission.</p>
+<p><strong>Target journal:</strong> <em>Electronics</em> (MDPI), research article.</p>
+<p><strong>Authors:</strong> Xianli Zeng^1,*, Qinghua Zhou^1</p>
+<p><strong>Affiliation:</strong> ^1 Changsha University of Science and Technology, Changsha 410114, China</p>
+<p><strong>Corresponding author:</strong> Xianli Zeng, zengxianli0626@163.com</p>
+<p><strong>ORCID:</strong> To be completed by the authors in the submission system.</p>
+<h2>Abstract</h2>
+<p>High-frequency voltage and current measurements contain informative load signatures, but image-based recognition can report misleading accuracy when class labels leak into pixels or correlated cycles cross evaluation splits. This study develops a leakage-aware multi-physical Gramian angular summation field (GASF) pipeline for event-aligned plug-load recognition. Voltage-aligned voltage, current, and instantaneous-power cycles are encoded as three-channel images and classified by a compact convolutional neural network (CNN). Two independent PLAID tasks are studied: 11-class appliance-type recognition and 26-label joint appliance-type/ON-OFF recognition. Images contain no rendered labels, primary splits are separated by source recording, and the appliance task is also evaluated with device-disjoint splits. For 11-class recognition, the current-only image model reaches 94.23 +/- 0.66% unseen-recording accuracy, whereas the three-channel model provides the strongest unseen-device transfer at 80.90 +/- 6.61% image accuracy and 90.62 +/- 2.76% mean device accuracy over three device splits. For 26-label recognition, adding 14 physical amplitude, power, power-factor, and harmonic descriptors increases mean test accuracy from 87.06 +/- 0.13% to 96.23 +/- 0.23% and macro-F1 from 85.72 +/- 0.17% to 96.23 +/- 0.24% over three training seeds. The physical branch removes severe Coffee maker/Water kettle confusion under the fixed held-out split. These results provide a compact reference for leakage-controlled electronic load recognition and show that normalized image shape and absolute electrical amplitude encode complementary information.</p>
+<p><strong>Keywords:</strong> non-intrusive load monitoring; appliance recognition; Gramian angular summation field; physical feature fusion; compact CNN; PLAID</p>
+<h2>1. Introduction</h2>
+<p>Appliance-level electrical information supports energy management, demand response, occupancy-aware services, and fault detection. Installing a sensor on every appliance is expensive, so non-intrusive load monitoring (NILM) infers load activity from a limited number of measurement points [1]. High-frequency voltage and current measurements expose switching transients, harmonic structure, and nonlinear voltage-current trajectories that are unavailable in low-rate active-power data [2]. These signatures can help distinguish both appliance categories and operating states [3,4].</p>
+<p>Deep learning has made high-frequency plug-load recognition increasingly practical. Reported accuracy, however, can be inflated by two common forms of evaluation leakage. First, generated images may contain class names, axes, filenames, or other metadata rendered into the pixels; a network can then learn text rather than electrical behavior. Second, many adjacent cycles from the same recording are highly correlated, so random image-level splitting can place near-duplicates in both training and test sets. Neither shortcut is available for a genuinely unseen recording or physical appliance.</p>
+<p>This study develops and audits a leakage-aware pipeline for two complementary recognition tasks. The first classifies 11 appliance types using individual PLAID recordings. The second combines 13 appliance types with ON and OFF states to form 26 labels and uses a zero-load reference to isolate event-related differential current and power. Each physical sequence is converted to a GASF image, and voltage, current, and power fields are stacked into a three-channel tensor. A compact four-stage CNN provides a low-parameter image baseline. Because per-cycle GASF normalization discards absolute amplitude, the 26-label model is additionally supplied with 14 physical descriptors covering root-mean-square (RMS) amplitude, active and apparent power, power factor, crest factor, total harmonic distortion (THD), and low-order harmonics.</p>
+<p>The contributions are:</p>
+<ol>
+<li>A corrected multi-physical GASF representation whose model input contains only numerical pixels.</li>
+<li>Recording-grouped evaluation for both tasks and device-disjoint validation for the 11-class task.</li>
+<li>A controlled channel analysis showing that the best 11-class representation depends on whether evaluation targets unseen recordings or unseen physical devices.</li>
+<li>A compact image-plus-physics model that improves 26-label recognition and removes a severe heating-load confusion under the fixed held-out split.</li>
+</ol>
+<p>The scope is event-aligned plug-load recognition. The study does not claim disaggregation of arbitrary aggregate building mains, state-of-the-art accuracy, or deployment-ready latency.</p>
+<h2>2. Related Work</h2>
+<h3>2.1 High-frequency event-based NILM</h3>
+<p>NILM methods are commonly divided into event-based and non-event-based approaches [1]. Event-based methods detect switching transitions and classify the associated load signature, whereas non-event-based methods estimate consumption from aggregate power. Recent reviews emphasize that high-frequency voltage and current data provide richer transient and harmonic evidence but also increase acquisition and processing requirements [2]. Voltage-current trajectories have been combined with transfer learning [5], deep CNNs [3], and transient-steady-state fusion [4]. The present work follows the event-aligned high-frequency setting and evaluates individual plug-load events rather than whole-building disaggregation.</p>
+<p>PLAID is a public dataset of high-resolution voltage and current measurements for appliance identification [6]. An early feasibility study demonstrated that high-frequency plug-load signatures can support automated recognition [7]. Subsequent studies have explored recurrence graphs and image-like time-series encodings [8,9], multi-label learning [10], and deep feature extraction [11]. These studies motivate compact recognition pipelines but also require careful separation of correlated cycles and physical devices.</p>
+<h3>2.2 Time-series imaging</h3>
+<p>Gramian angular fields map a one-dimensional sequence into a two-dimensional representation through pairwise angular relations [12]. GASF uses <code>sin(phi_i + phi_j)</code>, whereas the difference version, GADF, uses <code>sin(phi_i - phi_j)</code>. The present implementation explicitly uses GASF. Time-series imaging has previously been explored for load disaggregation [13], multi-label NILM representations [14], and adaptive recurrence plots [15]. These representations exploit local shape and periodic structure, but most require min-max or related normalization. Such normalization preserves shape while removing absolute magnitude, which may be unfavorable when two appliances have similar normalized cycles but different power levels.</p>
+<h3>2.3 Physical descriptors and compact models</h3>
+<p>Hand-crafted electrical descriptors remain useful alongside learned representations. RMS values, active and apparent power, power factor, crest factor, and harmonic ratios are interpretable, inexpensive to compute, and directly related to load physics. Studies of appliance ON/OFF classification and low-complexity disaggregation show the value of such compact information [16,17]. Deep models can capture additional nonlinear structure, but their computational cost must be considered for resource-aware applications [18,19]. Attention-based and ensemble models provide stronger alternatives at higher complexity [20,21].</p>
+<h3>2.4 Evaluation leakage and reproducibility</h3>
+<p>Grouped validation is required when samples are correlated within recordings or devices. Reproducibility studies have highlighted inconsistent preprocessing, data splits, and reporting practices in NILM [22,23]. Explainability studies also note that apparently accurate classifiers can rely on information that is not causally related to load operation [24]. The present study treats label leakage and source correlation as first-class experimental controls rather than post hoc caveats.</p>
+<h2>3. Data and Problem Definition</h2>
+<h3>3.1 PLAID</h3>
+<p>The experiments use PLAID, a high-frequency plug-load dataset containing voltage and current measurements of household appliances [6]. The sampling frequency is 30 kHz. The 11-class task contains Air Conditioner, Compact Fluorescent Lamp, Fan, Fridge, Hairdryer, Heater, Incandescent Light Bulb, Laptop, Microwave, Vacuum, and Washing Machine. The 26-label task contains ON and OFF variants of Air Conditioner, Blender, Coffee maker, Compact Fluorescent Lamp, Fan, Fridge, Fridge defroster, Hair Iron, Incandescent Light Bulb, Iron solder, Laptop, Vacuum, and Water kettle.</p>
+<h3>3.2 Task definitions and dataset composition</h3>
+<p>The 11-class target is the appliance category of an individual recording. The 26-label target is the joint appliance-category and operating-state label. A zero-load recording supplies a phase-aligned reference for the second task. Table 1 summarizes the dataset and split sizes.</p>
+<p><strong>Table 1.</strong> PLAID task composition. Counts are numbers of 64 x 64 GASF images. The same recording-grouped split is used for all training seeds within a task.</p>
+<table>
+<thead>
+<tr>
+<th>Task</th>
+<th align="right">Labels</th>
+<th align="right">Images</th>
+<th align="right">Train</th>
+<th align="right">Validation</th>
+<th align="right">Test</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>11-class appliance type</td>
+<td align="right">11</td>
+<td align="right">55,000</td>
+<td align="right">43,592</td>
+<td align="right">5,686</td>
+<td align="right">5,722</td>
+</tr>
+<tr>
+<td>26-label type/state</td>
+<td align="right">26</td>
+<td align="right">130,000</td>
+<td align="right">102,312</td>
+<td align="right">13,883</td>
+<td align="right">13,805</td>
+</tr>
+</tbody>
+</table>
+<h3>3.3 Recording-grouped and device-disjoint splits</h3>
+<p>All cycles derived from the same source recording are assigned to one split. This prevents correlated adjacent cycles from appearing in both training and test data. The 11-class dataset contains 1,772 source groups, and the 26-label dataset contains 2,710 selected source groups. No source group occurs in more than one split.</p>
+<p>For the 11-class task, PLAID metadata are used to derive 1,095 device identifiers. A separate leave-device-out protocol ensures that no device appears in both training and test data. Three device split seeds (42, 43, and 44) produce 124, 138, and 121 test devices, respectively. Device-disjoint results answer a different question from recording-grouped results and are therefore reported separately.</p>
+<h2>4. Method</h2>
+<h3>4.1 Event-aligned cycle extraction</h3>
+<p>For the 11-class task, the first CSV column is current and the second is voltage. Upward voltage zero crossings define the start of each cycle. A complete cycle contains 500 samples, corresponding to one 60 Hz period at 30 kHz:</p>
+<p><code>N = f_s / f_0 = 30,000 / 60 = 500</code>.</p>
+<p>Instantaneous power is:</p>
+<p><code>p[n] = v[n] i[n]</code>.</p>
+<p>For the 26-label task, a zero-load recording provides a phase-aligned baseline. The model inputs are:</p>
+<p><code>Delta i[n] = i_load[n] - i_zero[n]</code>,</p>
+<p><code>Delta p[n] = p_load[n] - p_zero[n]</code>,</p>
+<p>with the zero-load voltage used as the phase reference. The difference emphasizes the load event and suppresses background components.</p>
+<h3>4.2 GASF image construction</h3>
+<p>Each physical sequence is independently mapped to <code>[-1, 1]</code>:</p>
+<p><code>x_norm = 2 (x - min(x)) / (max(x) - min(x)) - 1</code>.</p>
+<p>Constant sequences are mapped to zero. The angular representation and GASF matrix are:</p>
+<p><code>phi = arccos(x_norm)</code>,</p>
+<p><code>G_ij = sin(phi_i + phi_j)</code>.</p>
+<p>Each matrix is normalized to <code>[0, 1]</code>, quantized to 8 bits, and stacked:</p>
+<p><code>R = GASF(v)</code>, <code>G = GASF(i)</code>, <code>B = GASF(p)</code>.</p>
+<p>For the 26-label task, current and power denote the baseline-corrected values. The <code>500 x 500 x 3</code> tensor is resized to <code>64 x 64</code> using bilinear interpolation. Images are saved directly as numerical RGB arrays. No title, axes, class name, colorbar, filename-derived text, or extra whitespace is rendered into the training image. Figure 1 shows the complete pipeline.</p>
+<p><img alt="Figure 1. Event-aligned multi-physical GASF recognition pipeline. Voltage and current cycles are segmented at upward voltage zero crossings. Voltage, current or differential current, and power are encoded as GASF channels. The image-only model uses the three-channel tensor directly; the fusion model additionally uses 14 physical descriptors." src="../figures/fig_pipeline.png" /></p>
+<h3>4.3 Compact CNN</h3>
+<p>The image model has four convolutional stages with 16, 32, 64, and 128 channels. Each stage uses a <code>3 x 3</code> convolution, batch normalization, ReLU, max pooling, and dropout. Global average pooling is followed by a two-layer classifier. The model has 106,891 parameters for the 11-class task and 107,866 parameters for the 26-label task. Unused input channels are replaced by zero-valued channels so that channel ablations retain the same architecture and parameter count.</p>
+<p>Training uses AdamW with learning rate <code>5 x 10^-4</code>, weight decay <code>10^-4</code>, batch size 64, label smoothing 0.05, and validation-based early stopping with patience 10. The learning rate is reduced by a factor of 0.7 after three epochs without validation-accuracy improvement. The checkpoint with the highest validation accuracy is evaluated once on the test set. Seeds 42, 43, and 44 control weight initialization and minibatch order while retaining the same data split.</p>
+<h3>4.4 Physical-feature fusion</h3>
+<p>Per-cycle GASF normalization retains waveform shape but removes absolute amplitude. The 26-label model therefore uses 14 additional physical features:</p>
+<ul>
+<li>RMS voltage and current;</li>
+<li>active and apparent power;</li>
+<li>power factor;</li>
+<li>current peak and crest factor;</li>
+<li>current THD from harmonics 2 through 9;</li>
+<li>third-, fifth-, and seventh-harmonic ratios;</li>
+<li>mean absolute current and power;</li>
+<li>logarithm of absolute active power.</li>
+</ul>
+<p>The image encoder outputs 128 features and the physical branch maps the 14 standardized descriptors to a 32-dimensional embedding. The concatenated 160-dimensional vector is classified by a compact multilayer network with 96 hidden units. The fusion model contains 117,498 parameters, approximately 9,600 more than the image-only model. Feature standardization is fitted using training data only.</p>
+<h3>4.5 Leakage controls</h3>
+<p>The reported experiments use the following controls:</p>
+<ol>
+<li>Images contain only numerical pixels and fixed-size interpolation.</li>
+<li>Primary splits are separated by source recording.</li>
+<li>The 11-class device study separates physical devices across training, validation, and test sets.</li>
+<li>Image-level random splitting is not used for reported performance.</li>
+<li>The test set is not used for hyperparameter or checkpoint selection.</li>
+<li>Physical-feature normalization statistics are computed only from training data.</li>
+<li>Source identifiers and labels are never model inputs.</li>
+</ol>
+<h3>4.6 Metrics and uncertainty</h3>
+<p>Accuracy and macro-F1 are computed on the held-out test split. For device-level analysis, we report image-weighted accuracy, mean per-device accuracy, and a class-balanced device mean that first averages within each device and then gives appliance classes equal weight. Means and standard deviations summarize three training seeds under one fixed data split unless otherwise stated. They quantify optimization variability, not independent resampling uncertainty of the test set.</p>
+<h2>5. Results</h2>
+<h3>5.1 Leakage audit</h3>
+<p>Historical image files from the development pipeline contained rendered class and state text. Resizing the full image to <code>64 x 64</code> retained a class-specific top band. In a reduced-scale diagnostic, a top-row-only input reached 99.83% accuracy for 26 labels when the title-bearing image was used. A second diagnostic retained only the top 12 rows after resizing and compared title-bearing with title-free images (Figure 2); the title-free condition reduced test accuracy from 87.83% to 76.42%. These diagnostics establish that class-dependent text was directly learnable and that the historical near-perfect results cannot be interpreted as waveform-recognition performance.</p>
+<p>After correction, generated images contain only numerical GASF pixels. The corrected recording-grouped split has zero source-group overlap. The 11-class device-disjoint splits have zero device overlap across train, validation, and test sets.</p>
+<p><img alt="Figure 2. Image-space leakage audit. (a) Historical image with the class and state rendered in the title band. (b) Corrected image containing only numerical RGB pixels. (c) Diagnostic classification using only the top 12 rows of resized title-bearing and title-free images under an image-level split. The reduced-scale diagnostic is intended to expose shortcut information, not to estimate final model performance." src="../figures/fig_leakage_audit.png" /></p>
+<h3>5.2 Eleven-class recording-level performance</h3>
+<p>Table 2 reports the channel comparison under the recording-grouped split.</p>
+<p><strong>Table 2.</strong> Eleven-class unseen-recording performance by input channel. Values are mean +/- standard deviation over training seeds 42, 43, and 44.</p>
+<table>
+<thead>
+<tr>
+<th>GASF input</th>
+<th align="right">Test accuracy</th>
+<th align="right">Test macro-F1</th>
+<th align="right">Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Current only (I)</td>
+<td align="right">94.23 +/- 0.66%</td>
+<td align="right">94.20 +/- 0.67%</td>
+<td align="right">106,891</td>
+</tr>
+<tr>
+<td>Power only (P)</td>
+<td align="right">94.20 +/- 0.53%</td>
+<td align="right">94.17 +/- 0.54%</td>
+<td align="right">106,891</td>
+</tr>
+<tr>
+<td>Current + voltage (V+I)</td>
+<td align="right"><strong>94.57 +/- 1.14%</strong></td>
+<td align="right"><strong>94.54 +/- 1.14%</strong></td>
+<td align="right">106,891</td>
+</tr>
+<tr>
+<td>Three-channel (V+I+P)</td>
+<td align="right">92.86 +/- 0.13%</td>
+<td align="right">92.82 +/- 0.09%</td>
+<td align="right">106,891</td>
+</tr>
+</tbody>
+</table>
+<p>V+I has the highest mean test score, but its seed variability is approximately nine times that of V+I+P for accuracy. I is the simplest input and performs within 1.34 accuracy points of V+I. The apparent recording-level gain from adding channels is therefore small and seed-dependent. Figure 3 visualizes this comparison.</p>
+<p><img alt="Figure 3. Unseen-recording channel comparison for 11-class recognition. Bars show mean test accuracy and macro-F1 over seeds 42-44; error bars show one standard deviation." src="../figures/fig_11class_recording_channels.png" /></p>
+<h3>5.3 Eleven-class device-level performance</h3>
+<p>Table 3 reports the leave-device-out results. The selected model for unseen-device transfer is the three-channel image CNN.</p>
+<p><strong>Table 3.</strong> Eleven-class leave-device-out performance. Image V+I+P and Hybrid V+I+P are evaluated over three device split seeds; the I configurations use seed 42 only and are not directly comparable in variance.</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th align="right">Splits</th>
+<th align="right">Image accuracy</th>
+<th align="right">Image macro-F1</th>
+<th align="right">Device mean</th>
+<th align="right">Class-balanced device</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Image I</td>
+<td align="right">1</td>
+<td align="right">63.51%</td>
+<td align="right">65.08%</td>
+<td align="right">78.94%</td>
+<td align="right">77.69%</td>
+</tr>
+<tr>
+<td>Image V+I+P</td>
+<td align="right">3</td>
+<td align="right"><strong>80.90 +/- 6.61%</strong></td>
+<td align="right"><strong>81.78 +/- 6.81%</strong></td>
+<td align="right"><strong>90.62 +/- 2.76%</strong></td>
+<td align="right"><strong>88.20 +/- 2.46%</strong></td>
+</tr>
+<tr>
+<td>Hybrid I</td>
+<td align="right">1</td>
+<td align="right">73.20%</td>
+<td align="right">74.89%</td>
+<td align="right">81.37%</td>
+<td align="right">82.19%</td>
+</tr>
+<tr>
+<td>Hybrid V+I+P</td>
+<td align="right">3</td>
+<td align="right">75.54 +/- 5.61%</td>
+<td align="right">77.12 +/- 5.18%</td>
+<td align="right">84.42 +/- 7.22%</td>
+<td align="right">81.51 +/- 9.30%</td>
+</tr>
+</tbody>
+</table>
+<p>The image-only three-channel model provides the strongest device-level result. Adding physical features improves selected categories such as Fridge and Fan but reduces overall device-balanced performance and stability. Since the I configurations use one device split, the large descriptive gap should be interpreted as evidence for selecting V+I+P for further device evaluation, not as a fully replicated comparison. Figure 4 shows image-weighted and device-balanced scores.</p>
+<p><img alt="Figure 4. Device-level evaluation of the 11-class models. Panel (a) shows image-weighted accuracy and panel (b) shows device-balanced accuracy. Image V+I+P and Hybrid V+I+P use three device splits; the I configurations use the first device split." src="../figures/fig_11class_device_models.png" /></p>
+<h3>5.4 Twenty-six-label results</h3>
+<p>Table 4 compares the 26-label models.</p>
+<p><strong>Table 4.</strong> Twenty-six-label test performance under the recording-grouped split. Image and fusion rows summarize seeds 42, 43, and 44; the multitask comparison is one run with seed 42.</p>
+<table>
+<thead>
+<tr>
+<th>Model</th>
+<th align="right">Test accuracy</th>
+<th align="right">Test macro-F1</th>
+<th align="right">Parameters</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Image V+I+P, three seeds</td>
+<td align="right">87.06 +/- 0.13%</td>
+<td align="right">85.72 +/- 0.17%</td>
+<td align="right">107,866</td>
+</tr>
+<tr>
+<td>Multitask type/state, seed 42</td>
+<td align="right">87.74%</td>
+<td align="right">86.84%</td>
+<td align="right">111,215</td>
+</tr>
+<tr>
+<td>Image + physical features, three seeds</td>
+<td align="right"><strong>96.23 +/- 0.23%</strong></td>
+<td align="right"><strong>96.23 +/- 0.24%</strong></td>
+<td align="right">117,498</td>
+</tr>
+</tbody>
+</table>
+<p>Physical fusion improves image-only mean performance by 9.18 accuracy points and 10.51 macro-F1 points. The single-seed multitask model improves by only 0.68 and 1.12 points relative to the image-only mean. Because the multitask comparison uses one seed, that difference is descriptive rather than a definitive architecture ranking. Figure 5 summarizes the comparison.</p>
+<p><img alt="Figure 5. Model comparison for 26-label recognition. Bars show mean test accuracy and macro-F1; error bars show one standard deviation over seeds 42-44 where applicable. Multitask is a single seed-42 run." src="../figures/fig_26state_model_comparison.png" /></p>
+<h3>5.5 Class-specific effects</h3>
+<p>Table 5 reports selected recalls for the 26-label image and fusion models.</p>
+<p><strong>Table 5.</strong> Selected 26-label recalls for the image-only and physical-fusion models. Fusion values are means over three training seeds.</p>
+<table>
+<thead>
+<tr>
+<th>Class</th>
+<th align="right">Image V+I+P</th>
+<th align="right">Physical fusion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Coffee maker_OFF</td>
+<td align="right">25.89%</td>
+<td align="right"><strong>100.00%</strong></td>
+</tr>
+<tr>
+<td>Coffee maker_ON</td>
+<td align="right">66.54%</td>
+<td align="right"><strong>100.00%</strong></td>
+</tr>
+<tr>
+<td>Water kettle_OFF</td>
+<td align="right">72.32%</td>
+<td align="right"><strong>100.00%</strong></td>
+</tr>
+<tr>
+<td>Water kettle_ON</td>
+<td align="right">33.22%</td>
+<td align="right"><strong>100.00%</strong></td>
+</tr>
+<tr>
+<td>Fridge_OFF</td>
+<td align="right">74.63%</td>
+<td align="right">74.63%</td>
+</tr>
+<tr>
+<td>Fan_ON</td>
+<td align="right">88.85%</td>
+<td align="right">88.79%</td>
+</tr>
+<tr>
+<td>Incandescent Light Bulb_ON</td>
+<td align="right">77.78%</td>
+<td align="right">81.52%</td>
+</tr>
+<tr>
+<td>Compact Fluorescent Lamp_OFF</td>
+<td align="right">99.02%</td>
+<td align="right">94.34%</td>
+</tr>
+</tbody>
+</table>
+<p>The image-only model changes the Coffee maker/Water kettle assignment across seeds. Fusion produces 100% recall for all four classes in every seed. This demonstrates seed-stable separation on the fixed test split; it does not establish perfect performance on new households or devices. Figure 6 shows these differences.</p>
+<p><img alt="Figure 6. Recall for difficult classes in the 26-label task. Bars compare the image-only V+I+P model with physical-feature fusion. Values are means over seeds 42-44, and error bars show one standard deviation." src="../figures/fig_26state_class_recall.png" /></p>
+<p>Fridge_OFF remains exactly 74.63% across seeds. Its errors move to Compact Fluorescent Lamp_ON, Fridge defroster_OFF, Laptop_ON, and Blender_ON in different seeds, suggesting a persistent data or operating-condition challenge that cannot be attributed definitively from the present experiment. Incandescent Light Bulb_ON also remains below 82%, while CFL_OFF declines from 99.02% to 94.34% after fusion. The physical descriptors therefore provide a large aggregate gain but are not uniformly beneficial for every class.</p>
+<h3>5.6 Training stability</h3>
+<p>The physical-fusion model reaches best validation accuracies of 98.04%, 98.11%, and 98.02% for seeds 42, 43, and 44. Test accuracies are 96.28%, 95.99%, and 96.43%, respectively. The validation-to-test gap is consistent across seeds, and no single initialization is responsible for the mean fusion result. Because all seeds use the same fixed test split, these values do not represent test-set resampling variability.</p>
+<h2>6. Discussion</h2>
+<p>The central result is the difference between leakage-free recording-level performance and device-level transfer. Removing rendered labels and separating correlated recordings prevents the network from exploiting shortcuts unavailable in deployment. A high image-level accuracy can therefore be interpreted as recognition of waveform signatures rather than recognition of embedded text. The device-disjoint experiment shows that recording-level accuracy alone is not sufficient evidence of transfer to new physical equipment.</p>
+<p>The 11-class channel study does not support the assumption that more physical channels always improve classification. Current-only GASF is nearly as accurate as the best recording-level model and uses a single physical sequence. The three-channel model is substantially stronger when entire devices are held out, where voltage and power may provide complementary robustness to device-specific current amplitude and waveform variation. The device result is nevertheless based on three partitions of one dataset, and the I baseline uses one partition; broader device-level replication is required before making a universal robustness claim.</p>
+<p>For the 26-label problem, GASF shape alone is insufficient. Coffee maker and Water kettle are both heating loads with similar normalized temporal patterns. Per-cycle normalization removes the absolute power magnitude that helps separate them. Adding RMS current, active power, power factor, and harmonic descriptors restores this information and removes the severe label instability across seeds. The unchanged Fridge_OFF recall indicates that the gain is class-dependent: the added descriptors solve one dominant confusion but do not compensate for every ambiguous operating condition.</p>
+<p>The multitask experiment shows that output-head factorization alone does not solve the problem. The state head reaches 98.87% accuracy, whereas the appliance-type head remains near 87.77%. Joint recognition is therefore limited primarily by load-type separation rather than by state decomposition. A future multitask model that also fuses physical descriptors may combine the benefits of explicit task structure and amplitude information.</p>
+<p>From an electronics perspective, the model remains small. The image model contains approximately 0.11 million parameters, and physical fusion adds approximately 9,600 parameters. The <code>64 x 64</code> representation limits storage and arithmetic requirements relative to larger image backbones. However, parameter count is not a deployment measurement. Device latency, peak memory, and energy consumption have not been measured, so the work does not claim real-time or edge-ready operation.</p>
+<p>The leakage audit has broader methodological implications. Image conversion is often presented as a preprocessing detail, but axes, titles, colorbars, and filenames create a separate information channel. Source-grouped splitting is also necessary when each recording yields many highly similar cycles. Reporting both recording- and device-disjoint results separates two distinct generalization questions and makes failure modes visible.</p>
+<h2>7. Limitations</h2>
+<ol>
+<li>Only PLAID is evaluated; cross-dataset and cross-household generalization remain unknown.</li>
+<li>The task uses event-aligned plug-load recordings rather than arbitrary aggregate mains.</li>
+<li>The zero-load baseline may not be available or perfectly phase-aligned in every deployment.</li>
+<li>The 11-class device map is derived from metadata; conservative per-sample identifiers are used when brand or model information is missing.</li>
+<li>The I device baselines use one device split, whereas V+I+P uses three; a fully replicated comparison remains desirable.</li>
+<li>The 26-label multitask comparison uses one training seed.</li>
+<li>Fridge_OFF and Incandescent Light Bulb_ON remain weak, and CFL_OFF recall decreases after fusion.</li>
+<li>The final image resolution is <code>64 x 64</code>; larger resolutions and larger backbone models require separate experiments.</li>
+<li>No measured inference latency, memory footprint, or energy consumption is reported.</li>
+<li>The result is established on one fixed recording-grouped split; the three-seed standard deviation describes optimization variability rather than split uncertainty.</li>
+</ol>
+<h2>8. Conclusion</h2>
+<p>This study presents a leakage-aware multi-physical GASF pipeline for plug-load appliance and state recognition. Corrected images contain only numerical pixels, and primary splits are separated by source recording. The 11-class task reaches 94.23% recording-level accuracy with the compact current-only GASF model, while the three-channel image model provides the strongest device-level transfer at 80.90% image accuracy and 90.62% mean device accuracy across three device splits.</p>
+<p>For 26-label recognition, physical-feature fusion increases mean test accuracy and macro-F1 to 96.23% over three training seeds and eliminates the unstable Coffee maker/Water kettle assignment on the fixed held-out split. Fridge and selected lighting states remain difficult. The results provide a reproducible, compact, and physics-informed baseline while showing that leakage-aware grouped and device-disjoint evaluation is essential for credible NILM performance claims.</p>
+<h2>Author Contributions</h2>
+<p>Conceptualization, X.Z.; methodology, X.Z.; software, X.Z.; validation, X.Z.; formal analysis, X.Z.; investigation, X.Z.; data curation, X.Z.; writing-original draft preparation, X.Z.; supervision, Q.Z.; project administration, Q.Z.; writing-review and editing, Q.Z. Both authors have read and agreed to the published version of the manuscript.</p>
+<h2>Funding</h2>
+<p>This research received no external funding.</p>
+<h2>Institutional Review Board Statement</h2>
+<p>Not applicable.</p>
+<h2>Informed Consent Statement</h2>
+<p>Not applicable.</p>
+<h2>Data Availability Statement</h2>
+<p>PLAID is available from its original providers under the conditions described in its dataset record. The corrected implementation, split-generation scripts, derived metadata, manuscript sources, and figure-generation scripts are maintained in the project repository at https://github.com/zxl664089808/nilm-gasf-fusion. Repository tag <code>paper-v0.3</code> identifies the exact snapshot accompanying this manuscript. A versioned public archive with a persistent DOI will be linked before publication. Raw PLAID recordings, large image caches, and trained weights are not redistributed.</p>
+<h2>Conflicts of Interest</h2>
+<p>The authors declare no conflicts of interest.</p>
+<h2>Abbreviations</h2>
+<p>CNN, convolutional neural network; GASF, Gramian angular summation field; GADF, Gramian angular difference field; NILM, non-intrusive load monitoring; PLAID, Plug Load Appliance Identification Dataset; RMS, root mean square; THD, total harmonic distortion.</p>
+<h2>References</h2>
+<p>[1] Schirmer, Pascal A.; Mporas, Iosif. Non-intrusive load monitoring: A review. <em>IEEE Transactions on Smart Grid</em>. 2023, 14(1), 769–784. https://doi.org/10.1109/TSG.2022.3189598.
+[2] Papageorgiou, Petros G.; Christoforidis, Georgios C.; Bouhouras, Aggelos S. NILM in high frequency domain: a critical review on recent trends and practical challenges. <em>Renewable and Sustainable Energy Reviews</em>. 2025, 213, 115497. https://doi.org/10.1016/j.rser.2025.115497.
+[3] Yin, Hui; Zhou, Kaile; Yang, Shanlin. Non-intrusive load monitoring by load trajectory and multi-feature based on DCNN. <em>IEEE Transactions on Industrial Informatics</em>. 2023, 19(10), 10388–10400. https://doi.org/10.1109/TII.2023.3240924.
+[4] Zhu, Jun-Wei; Zhong, Yong-Jun; Ruan, Rou-Ru; Gao, Ping; Fan, Li-Liang. A new nonintrusive load monitoring method via transient-steady-state feature fusion. <em>IEEE Sensors Journal</em>. 2025, 25(22), 41849–41858. https://doi.org/10.1109/JSEN.2025.3619084.
+[5] Liu, Yanchi; Wang, Xue; You, Wei. Non-intrusive load monitoring by voltage–current trajectory enabled transfer learning. <em>IEEE Transactions on Smart Grid</em>. 2019, 10(5), 5609–5619. https://doi.org/10.1109/TSG.2018.2888581.
+[6] Gao, Jingkun; Giri, Suman; Kara, Emre Can; Bergés, Mario. PLAID: A Public Dataset of High-Resolution Electrical Appliance Measurements for Load Identification Research: Demo Abstract. <em>Proceedings of the 1st ACM Conference on Embedded Systems for Energy-Efficient Buildings</em>. 2014, 198–199. https://doi.org/10.1145/2674061.2675032.
+[7] Gao, Jingkun; Kara, Emre Can; Giri, Suman; Bergés, Mario. A Feasibility Study of Automated Plug-Load Identification from High-Frequency Measurements. <em>2015 IEEE Global Conference on Signal and Information Processing (GlobalSIP)</em>. 2015, 220–224. https://doi.org/10.1109/GlobalSIP.2015.7418189.
+[8] Faustine, Anthony; Pereira, Lucas. Improved appliance classification in non-intrusive load monitoring using weighted recurrence graph and convolutional neural networks. <em>Energies</em>. 2020, 13(13), 3374. https://doi.org/10.3390/en13133374.
+[9] Faustine, Anthony; Pereira, Lucas; Klemenjak, Christoph. Adaptive weighted recurrence graphs for appliance recognition in non-intrusive load monitoring. <em>IEEE Transactions on Smart Grid</em>. 2021, 12(1), 398–406. https://doi.org/10.1109/TSG.2020.3010621.
+[10] Faustine, Anthony; Pereira, Lucas. Multi-label learning for appliance recognition in NILM using fryze-current decomposition and convolutional neural network. <em>Energies</em>. 2020, 13(16), 4154. https://doi.org/10.3390/en13164154.
+[11] Nolasco, Lucas da Silva; Lazzaretti, André Eugenio; Mulinari, Bruna Machado. DeepDFML-NILM: a new CNN-based architecture for detection, feature extraction and multi-label classification in NILM signals. <em>IEEE Sensors Journal</em>. 2022, 22(1), 501–509. https://doi.org/10.1109/JSEN.2021.3127322.
+[12] Wang, Zhiguang; Oates, Tim. Encoding Time Series as Images for Visual Inspection and Classification Using Tiled Convolutional Neural Networks. <em>Workshops at the Twenty-Ninth AAAI Conference on Artificial Intelligence</em>. 2015.
+[13] Bousbiat, Hafsa; Klemenjak, Christoph; Elmenreich, Wilfried. Exploring time series imaging for load disaggregation. <em>Proceedings of the 7th ACM International Conference on Systems for Energy-Efficient Buildings, Cities, and Transportation</em>. 2020, 254–257. https://doi.org/10.1145/3408308.3427975.
+[14] Nalmpantis, Christoforos; Vrakas, Dimitris. On time series representations for multi-label NILM. <em>Neural Computing and Applications</em>. 2020, 32(23). https://doi.org/10.1007/s00521-020-04916-5.
+[15] Shi, Yongtao; Zhao, Xiaodong; Zhang, Fan; Kong, Yaguang. Non-intrusive load monitoring based on swin-transformer with adaptive scaling recurrence plot. <em>Energies</em>. 2022, 15(20), 7800. https://doi.org/10.3390/en15207800.
+[16] Pirnat, Anže; Bertalanič, Blaž; Cerar, Gregor; Mohorčič, Mihael; Fortuna, Carolina. Energy efficient deep multi-label ON/OFF classification of low frequency metered home appliances. <em>IEEE Access</em>. 2024, 12, 51966–51981. https://doi.org/10.1109/ACCESS.2024.3382830.
+[17] Devie, P. M.; Kalyani, S.; Manoharan, P. S.; Chandra, V. Low Complexity Energy Disaggregation Algorithm for Non-intrusive Load Monitoring. <em>Electric Power Components and Systems</em>. 2024, 1–12. https://doi.org/10.1080/15325008.2024.2332388.
+[18] Li, Zewen; Liu, Fan; Yang, Wenjie; Peng, Shouheng; Zhou, Jun. A survey of convolutional neural networks: analysis, applications, and prospects. <em>IEEE Transactions on Neural Networks and Learning Systems</em>. 2022, 33(12), 6999–7019. https://doi.org/10.1109/TNNLS.2021.3084827.
+[19] Athanasoulias, Sotirios; Sykiotis, Stavros; Kaselimi, Maria; Doulamis, Anastasios; Doulamis, Nikolaos; Ipiotis, Nikolaos. OPT-NILM: An iterative prior-to-full-training pruning approach for cost-effective user side energy disaggregation. <em>IEEE Transactions on Consumer Electronics</em>. 2024, 70(1), 4435–4446. https://doi.org/10.1109/TCE.2023.3324493.
+[20] Irani Azad, Mohammad; Rajabi, Roozbeh; Estebsari, Abouzar. Nonintrusive load monitoring (NILM) using a deep learning model with a transformer-based attention mechanism and temporal pooling. <em>Electronics</em>. 2024, 13(2), 407. https://doi.org/10.3390/electronics13020407.
+[21] Moreno, Silvia; Teran, Hector; Villarreal, Reynaldo; Vega-Sampayo, Yolanda; Paez, Jheifer; Ochoa, Carlos; Espejo, Carlos Alejandro; Chamorro-Solano, Sindy; Montoya, Camilo. An ensemble method for non-intrusive load monitoring (NILM) applied to deep learning approaches. <em>Energies</em>. 2024, 17(18), 4548. https://doi.org/10.3390/en17184548.
+[22] Yan, Zhongzong; Nardello, Matteo; Brunelli, Davide; Wen, He. Reproducible non-intrusive load monitoring: a survey of open-source methods and practical challenges. <em>Renewable &amp; Sustainable Energy Reviews</em>. 2026, 226, 116255. https://doi.org/10.1016/j.rser.2025.116255.
+[23] Saleem, Muhammad Hammad; Taha, Muhammad; Rehmani, Muhammad Asif Ali; Tito, Shafiqur Rahman; Soltic, Snjezana; Nieuwoudt, Pieter; Pandey, Neel; Ahmed, Mollah Daud. A comprehensive review of machine learning and deep learning models for non-intrusive load monitoring: performance, analyses, practical insights, and emerging trends. <em>Applied Intelligence</em>. 2025, 55(15), 1020. https://doi.org/10.1007/s10489-025-06921-4.
+[24] Batic, Djordje; Stankovic, Vladimir; Stankovic, Lina. Toward transparent load disaggregation—a framework for quantitative evaluation of explainability using explainable AI. <em>IEEE Transactions on Consumer Electronics</em>. 2024, 70(1), 4345–4356. https://doi.org/10.1109/TCE.2023.3300530.</p>
+<h2>Pre-Submission Checklist</h2>
+<ul>
+<li>Add both ORCID identifiers and verify the CRediT allocation.</li>
+<li>Deposit the repository snapshot in Zenodo (or another DOI service) and replace the commit-only statement with the public archive DOI.</li>
+<li>Confirm whether the GitHub repository is public; otherwise make it public at acceptance.</li>
+<li>Convert the manuscript, tables, and vector figures to the current Electronics template.</li>
+<li>Recheck all numerical values against the frozen result tables and final repository commit.</li>
+</ul>
+</body>
+</html>

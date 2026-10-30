@@ -4,6 +4,22 @@ Unified reproducibility repository for the paper draft:
 
 **Leakage-Aware Multi-Physical GASF Imaging for Plug-Load Appliance and State Recognition**
 
+## Current manuscript
+
+- Source: `paper/manuscript/manuscript_electronics_v0.3.md`
+- Numbered citations: `paper/manuscript/manuscript_electronics_v0.3_numbered.md`
+- Browser preview: `paper/manuscript/manuscript_electronics_v0.3_preview.html`
+- Cover letter: `paper/manuscript/electronics_cover_letter.md`
+- Submission status: `paper/submission/pre_submission_status_v0.3.md`
+
+Rebuild the numbered manuscript and HTML preview with:
+
+```powershell
+D:\Anaconda\python.exe paper\manuscript\build_preview.py
+```
+
+Version 0.2 and its preview are retained as development history.
+
 ## Structure
 
 ```text

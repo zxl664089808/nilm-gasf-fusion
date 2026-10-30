@@ -21,12 +21,12 @@ table,figure{break-inside:avoid}}
 </head>
 <body>
 <h1>Leakage-Aware Multi-Physical GASF Imaging for Plug-Load Appliance and State Recognition</h1>
-<p><strong>Draft status:</strong> Version 0.3, Electronics submission candidate. ORCID identifiers and the final public-archive DOI remain to be supplied before submission.</p>
+<p><strong>Draft status:</strong> Version 0.3.1, Electronics submission candidate. ORCID verification, the corresponding-author email, and the final public-archive DOI remain to be completed before submission.</p>
 <p><strong>Target journal:</strong> <em>Electronics</em> (MDPI), research article.</p>
-<p><strong>Authors:</strong> Xianli Zeng^1,*, Qinghua Zhou^1</p>
+<p><strong>Authors:</strong> Xianli Zeng^1, Qinghua Zhou^1,*</p>
 <p><strong>Affiliation:</strong> ^1 Changsha University of Science and Technology, Changsha 410114, China</p>
-<p><strong>Corresponding author:</strong> Xianli Zeng, zengxianli0626@163.com</p>
-<p><strong>ORCID:</strong> To be completed by the authors in the submission system.</p>
+<p><strong>Corresponding author:</strong> Qinghua Zhou. Email to be supplied by the corresponding author.</p>
+<p><strong>ORCID:</strong> Xianli Zeng, 0000-0002-1825-0097 (verification required); Qinghua Zhou, 0000-0001-5109-3700 (verification required).</p>
 <h2>Abstract</h2>
 <p>High-frequency voltage and current measurements contain informative load signatures, but image-based recognition can report misleading accuracy when class labels leak into pixels or correlated cycles cross evaluation splits. This study develops a leakage-aware multi-physical Gramian angular summation field (GASF) pipeline for event-aligned plug-load recognition. Voltage-aligned voltage, current, and instantaneous-power cycles are encoded as three-channel images and classified by a compact convolutional neural network (CNN). Two independent PLAID tasks are studied: 11-class appliance-type recognition and 26-label joint appliance-type/ON-OFF recognition. Images contain no rendered labels, primary splits are separated by source recording, and the appliance task is also evaluated with device-disjoint splits. For 11-class recognition, the current-only image model reaches 94.23 +/- 0.66% unseen-recording accuracy, whereas the three-channel model provides the strongest unseen-device transfer at 80.90 +/- 6.61% image accuracy and 90.62 +/- 2.76% mean device accuracy over three device splits. For 26-label recognition, adding 14 physical amplitude, power, power-factor, and harmonic descriptors increases mean test accuracy from 87.06 +/- 0.13% to 96.23 +/- 0.23% and macro-F1 from 85.72 +/- 0.17% to 96.23 +/- 0.24% over three training seeds. The physical branch removes severe Coffee maker/Water kettle confusion under the fixed held-out split. These results provide a compact reference for leakage-controlled electronic load recognition and show that normalized image shape and absolute electrical amplitude encode complementary information.</p>
 <p><strong>Keywords:</strong> non-intrusive load monitoring; appliance recognition; Gramian angular summation field; physical feature fusion; compact CNN; PLAID</p>
@@ -355,7 +355,7 @@ table,figure{break-inside:avoid}}
 <p>This study presents a leakage-aware multi-physical GASF pipeline for plug-load appliance and state recognition. Corrected images contain only numerical pixels, and primary splits are separated by source recording. The 11-class task reaches 94.23% recording-level accuracy with the compact current-only GASF model, while the three-channel image model provides the strongest device-level transfer at 80.90% image accuracy and 90.62% mean device accuracy across three device splits.</p>
 <p>For 26-label recognition, physical-feature fusion increases mean test accuracy and macro-F1 to 96.23% over three training seeds and eliminates the unstable Coffee maker/Water kettle assignment on the fixed held-out split. Fridge and selected lighting states remain difficult. The results provide a reproducible, compact, and physics-informed baseline while showing that leakage-aware grouped and device-disjoint evaluation is essential for credible NILM performance claims.</p>
 <h2>Author Contributions</h2>
-<p>Conceptualization, X.Z.; methodology, X.Z.; software, X.Z.; validation, X.Z.; formal analysis, X.Z.; investigation, X.Z.; data curation, X.Z.; writing-original draft preparation, X.Z.; supervision, Q.Z.; project administration, Q.Z.; writing-review and editing, Q.Z. Both authors have read and agreed to the published version of the manuscript.</p>
+<p>Methodology, investigation, data curation, formal analysis, visualization, and writing-original draft preparation, X.Z.; conceptualization, supervision, project administration, funding acquisition, validation, and writing-review and editing, Q.Z. Both authors have read and agreed to the published version of the manuscript.</p>
 <h2>Funding</h2>
 <p>This research received no external funding.</p>
 <h2>Institutional Review Board Statement</h2>
@@ -363,7 +363,7 @@ table,figure{break-inside:avoid}}
 <h2>Informed Consent Statement</h2>
 <p>Not applicable.</p>
 <h2>Data Availability Statement</h2>
-<p>PLAID is available from its original providers under the conditions described in its dataset record. The corrected implementation, split-generation scripts, derived metadata, manuscript sources, and figure-generation scripts are maintained in the project repository at https://github.com/zxl664089808/nilm-gasf-fusion. Repository tag <code>paper-v0.3</code> identifies the exact snapshot accompanying this manuscript. A versioned public archive with a persistent DOI will be linked before publication. Raw PLAID recordings, large image caches, and trained weights are not redistributed.</p>
+<p>PLAID is available from its original providers under the conditions described in its dataset record. The corrected implementation, split-generation scripts, derived metadata, manuscript sources, and figure-generation scripts are maintained in the project repository at https://github.com/zxl664089808/nilm-gasf-fusion. Repository tag <code>paper-v0.3.1</code> identifies the exact snapshot accompanying this manuscript. A versioned public archive with a persistent DOI will be linked before publication. Raw PLAID recordings, large image caches, and trained weights are not redistributed.</p>
 <h2>Conflicts of Interest</h2>
 <p>The authors declare no conflicts of interest.</p>
 <h2>Abbreviations</h2>
@@ -395,7 +395,9 @@ table,figure{break-inside:avoid}}
 [24] Batic, Djordje; Stankovic, Vladimir; Stankovic, Lina. Toward transparent load disaggregation—a framework for quantitative evaluation of explainability using explainable AI. <em>IEEE Transactions on Consumer Electronics</em>. 2024, 70(1), 4345–4356. https://doi.org/10.1109/TCE.2023.3300530.</p>
 <h2>Pre-Submission Checklist</h2>
 <ul>
-<li>Add both ORCID identifiers and verify the CRediT allocation.</li>
+<li>Verify both ORCID identifiers; the first identifier is an ORCID demonstration
+  record and cannot be submitted without correction.</li>
+<li>Add the corresponding author's email address.</li>
 <li>Deposit the repository snapshot in Zenodo (or another DOI service) and replace the commit-only statement with the public archive DOI.</li>
 <li>Confirm whether the GitHub repository is public; otherwise make it public at acceptance.</li>
 <li>Convert the manuscript, tables, and vector figures to the current Electronics template.</li>

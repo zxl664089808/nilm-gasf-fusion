@@ -36,7 +36,8 @@ declare no conflicts of interest.
 
 Sincerely,
 
-Xianli Zeng  
-Changsha University of Science and Technology  
-Changsha, China  
-zengxianli0626@163.com
+Xianli Zeng
+
+Qinghua Zhou (Corresponding author)
+
+Changsha University of Science and Technology, Changsha, China

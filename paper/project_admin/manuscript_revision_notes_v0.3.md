@@ -1,4 +1,4 @@
-# Manuscript revision notes v0.3
+# Manuscript revision notes v0.3.1
 
 Date: 2026-10-30
 
@@ -33,7 +33,16 @@ Date: 2026-10-30
 
 ## Remaining author decisions
 
-- Supply both ORCID identifiers.
-- Confirm the CRediT roles.
+- Supply the corresponding email address for Qinghua Zhou.
 - Confirm that the code repository may be made public.
 - Approve deposit metadata for Zenodo.
+
+## Author metadata update
+
+- Xianli Zeng is the first author. The supplied ORCID
+  0000-0002-1825-0097 is an ORCID demonstration record and remains marked for
+  verification.
+- Qinghua Zhou is the second and corresponding author. The supplied ORCID
+  0000-0001-5109-3700 also remains marked for verification.
+- The six CRediT roles supplied by each author have been applied to the
+  manuscript and author-information files.

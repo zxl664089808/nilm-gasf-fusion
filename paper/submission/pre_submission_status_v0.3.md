@@ -1,4 +1,4 @@
-# Pre-submission status v0.3
+# Pre-submission status v0.3.1
 
 Date: 2026-10-30
 
@@ -26,11 +26,14 @@ Date: 2026-10-30
 - The 100% heating-load recall is limited to the fixed held-out split and is not
   presented as universal generalization.
 
-## Blocking author inputs
+## Remaining author inputs
 
-1. ORCID identifiers for Xianli Zeng and Qinghua Zhou.
-2. Final confirmation of the CRediT allocation.
-3. A public DOI-bearing archive URL, preferably a tagged Zenodo release.
+1. Verified ORCID identifiers. The supplied first-author identifier
+   `0000-0002-1825-0097` is ORCID's standard demonstration record.
+2. The corresponding email address for Qinghua Zhou.
+3. Confirmation of whether the funding statement should remain "no external
+   funding," because Qinghua Zhou is assigned the Funding acquisition role.
+4. A public DOI-bearing archive URL, preferably a tagged Zenodo release.
 
 ## Technical work before submission
 

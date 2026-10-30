@@ -33,14 +33,17 @@ conversion.
 
 ## Metadata required in the submission system
 
-- Authors: Xianli Zeng; Qinghua Zhou
+- Authors: Xianli Zeng (first author); Qinghua Zhou (second author and
+  corresponding author)
 - Affiliation: Changsha University of Science and Technology, Changsha 410114,
   China
-- Corresponding author: Xianli Zeng
-- Email: zengxianli0626@163.com
+- Corresponding author: Qinghua Zhou
+- Email: to be supplied by the corresponding author
 - Funding: none
 - Conflict of interest: none
-- ORCID: to be supplied by both authors
+- ORCID: both supplied identifiers require verification. In particular,
+  `0000-0002-1825-0097` is ORCID's demonstration record and must be replaced
+  before submission.
 
 ## Final conversion
 

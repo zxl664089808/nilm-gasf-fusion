@@ -1,16 +1,16 @@
 # Leakage-Aware Multi-Physical GASF Imaging for Plug-Load Appliance and State Recognition
 
-**Draft status:** Version 0.3, Electronics submission candidate. ORCID identifiers and the final public-archive DOI remain to be supplied before submission.
+**Draft status:** Version 0.3.1, Electronics submission candidate. ORCID verification, the corresponding-author email, and the final public-archive DOI remain to be completed before submission.
 
 **Target journal:** *Electronics* (MDPI), research article.
 
-**Authors:** Xianli Zeng^1,\*, Qinghua Zhou^1
+**Authors:** Xianli Zeng^1, Qinghua Zhou^1,\*
 
 **Affiliation:** ^1 Changsha University of Science and Technology, Changsha 410114, China
 
-**Corresponding author:** Xianli Zeng, zengxianli0626@163.com
+**Corresponding author:** Qinghua Zhou. Email to be supplied by the corresponding author.
 
-**ORCID:** To be completed by the authors in the submission system.
+**ORCID:** Xianli Zeng, 0000-0002-1825-0097 (verification required); Qinghua Zhou, 0000-0001-5109-3700 (verification required).
 
 ## Abstract
 
@@ -277,7 +277,7 @@ For 26-label recognition, physical-feature fusion increases mean test accuracy a
 
 ## Author Contributions
 
-Conceptualization, X.Z.; methodology, X.Z.; software, X.Z.; validation, X.Z.; formal analysis, X.Z.; investigation, X.Z.; data curation, X.Z.; writing-original draft preparation, X.Z.; supervision, Q.Z.; project administration, Q.Z.; writing-review and editing, Q.Z. Both authors have read and agreed to the published version of the manuscript.
+Methodology, investigation, data curation, formal analysis, visualization, and writing-original draft preparation, X.Z.; conceptualization, supervision, project administration, funding acquisition, validation, and writing-review and editing, Q.Z. Both authors have read and agreed to the published version of the manuscript.
 
 ## Funding
 
@@ -293,7 +293,7 @@ Not applicable.
 
 ## Data Availability Statement
 
-PLAID is available from its original providers under the conditions described in its dataset record. The corrected implementation, split-generation scripts, derived metadata, manuscript sources, and figure-generation scripts are maintained in the project repository at https://github.com/zxl664089808/nilm-gasf-fusion. Repository tag `paper-v0.3` identifies the exact snapshot accompanying this manuscript. A versioned public archive with a persistent DOI will be linked before publication. Raw PLAID recordings, large image caches, and trained weights are not redistributed.
+PLAID is available from its original providers under the conditions described in its dataset record. The corrected implementation, split-generation scripts, derived metadata, manuscript sources, and figure-generation scripts are maintained in the project repository at https://github.com/zxl664089808/nilm-gasf-fusion. Repository tag `paper-v0.3.1` identifies the exact snapshot accompanying this manuscript. A versioned public archive with a persistent DOI will be linked before publication. Raw PLAID recordings, large image caches, and trained weights are not redistributed.
 
 ## Conflicts of Interest
 
@@ -332,7 +332,9 @@ CNN, convolutional neural network; GASF, Gramian angular summation field; GADF, 
 
 ## Pre-Submission Checklist
 
-- Add both ORCID identifiers and verify the CRediT allocation.
+- Verify both ORCID identifiers; the first identifier is an ORCID demonstration
+  record and cannot be submitted without correction.
+- Add the corresponding author's email address.
 - Deposit the repository snapshot in Zenodo (or another DOI service) and replace the commit-only statement with the public archive DOI.
 - Confirm whether the GitHub repository is public; otherwise make it public at acceptance.
 - Convert the manuscript, tables, and vector figures to the current Electronics template.

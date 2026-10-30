@@ -1,0 +1,11 @@
+runs/
+outputs/
+__pycache__/
+*.py[cod]
+*.pth
+*.pt
+*.npy
+*.npz
+*.pkl
+*.log
+.venv/

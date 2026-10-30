@@ -1,0 +1,29 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "nilm-clean-pipeline"
+version = "0.1.0"
+description = "Leakage-safe image generation and grouped evaluation for PLAID NILM experiments"
+readme = "README.md"
+requires-python = ">=3.9"
+dependencies = [
+  "numpy>=1.24,<3",
+  "pandas>=1.5",
+  "Pillow>=9.1",
+  "scikit-learn>=1.0",
+  "torch>=2.0",
+  "torchvision>=0.15",
+  "tqdm>=4.60",
+]
+
+[project.optional-dependencies]
+dev = ["pytest>=7"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+testpaths = ["tests"]

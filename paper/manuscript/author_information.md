@@ -17,10 +17,8 @@ Email: to be supplied by the corresponding author
 
 ## ORCID
 
-- Xianli Zeng: 0000-0002-1825-0097, provided by the author but not verified.
-  This is the standard ORCID demonstration identifier and must not be used
-  unless the author confirms an actual exception.
-- Qinghua Zhou: 0000-0001-5109-3700, provided by the author but not verified.
+- Xianli Zeng: https://orcid.org/0009-0008-6326-953X
+- Qinghua Zhou: https://orcid.org/0000-0002-4608-1446
 
 ## Declarations
 

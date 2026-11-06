@@ -1,4 +1,4 @@
-# Manuscript revision notes v0.3.1
+# Manuscript revision notes v0.3.2
 
 Date: 2026-10-30
 
@@ -39,10 +39,8 @@ Date: 2026-10-30
 
 ## Author metadata update
 
-- Xianli Zeng is the first author. The supplied ORCID
-  0000-0002-1825-0097 is an ORCID demonstration record and remains marked for
-  verification.
-- Qinghua Zhou is the second and corresponding author. The supplied ORCID
-  0000-0001-5109-3700 also remains marked for verification.
+- Xianli Zeng is the first author, ORCID 0009-0008-6326-953X.
+- Qinghua Zhou is the second and corresponding author, ORCID
+  0000-0002-4608-1446.
 - The six CRediT roles supplied by each author have been applied to the
   manuscript and author-information files.

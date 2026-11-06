@@ -41,9 +41,8 @@ conversion.
 - Email: to be supplied by the corresponding author
 - Funding: none
 - Conflict of interest: none
-- ORCID: both supplied identifiers require verification. In particular,
-  `0000-0002-1825-0097` is ORCID's demonstration record and must be replaced
-  before submission.
+- ORCID: Xianli Zeng, 0009-0008-6326-953X; Qinghua Zhou,
+  0000-0002-4608-1446
 
 ## Final conversion
 

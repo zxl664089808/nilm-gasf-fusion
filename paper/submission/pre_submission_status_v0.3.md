@@ -1,4 +1,4 @@
-# Pre-submission status v0.3.1
+# Pre-submission status v0.3.2
 
 Date: 2026-10-30
 
@@ -28,12 +28,10 @@ Date: 2026-10-30
 
 ## Remaining author inputs
 
-1. Verified ORCID identifiers. The supplied first-author identifier
-   `0000-0002-1825-0097` is ORCID's standard demonstration record.
-2. The corresponding email address for Qinghua Zhou.
-3. Confirmation of whether the funding statement should remain "no external
+1. The corresponding email address for Qinghua Zhou.
+2. Confirmation of whether the funding statement should remain "no external
    funding," because Qinghua Zhou is assigned the Funding acquisition role.
-4. A public DOI-bearing archive URL, preferably a tagged Zenodo release.
+3. A public DOI-bearing archive URL, preferably a tagged Zenodo release.
 
 ## Technical work before submission
 

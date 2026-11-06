@@ -55,7 +55,7 @@ integration into the same provenance-controlled repository.
 
 ## Remaining submission work
 
-1. Confirm ORCID records and CRediT allocation.
+1. Add the corresponding email and confirm the funding statement.
 2. Create a DOI-bearing repository archive.
 3. Convert the manuscript and vector figures to the current Electronics
    template.

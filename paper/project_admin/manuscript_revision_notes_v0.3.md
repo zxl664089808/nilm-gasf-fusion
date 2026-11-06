@@ -1,4 +1,4 @@
-# Manuscript revision notes v0.3.2
+# Manuscript revision notes v0.3.3
 
 Date: 2026-10-30
 
@@ -33,7 +33,6 @@ Date: 2026-10-30
 
 ## Remaining author decisions
 
-- Supply the corresponding email address for Qinghua Zhou.
 - Confirm that the code repository may be made public.
 - Approve deposit metadata for Zenodo.
 
@@ -42,5 +41,8 @@ Date: 2026-10-30
 - Xianli Zeng is the first author, ORCID 0009-0008-6326-953X.
 - Qinghua Zhou is the second and corresponding author, ORCID
   0000-0002-4608-1446.
-- The six CRediT roles supplied by each author have been applied to the
-  manuscript and author-information files.
+- The confirmed CRediT roles have been applied to the manuscript and
+  author-information files.
+- The corresponding email is zhouqinghua@csust.edu.cn.
+- Funding acquisition was removed from Qinghua Zhou's CRediT roles, and the
+  manuscript consistently states that no external funding was received.

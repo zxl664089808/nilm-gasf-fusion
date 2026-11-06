@@ -38,7 +38,7 @@ conversion.
 - Affiliation: Changsha University of Science and Technology, Changsha 410114,
   China
 - Corresponding author: Qinghua Zhou
-- Email: to be supplied by the corresponding author
+- Email: zhouqinghua@csust.edu.cn
 - Funding: none
 - Conflict of interest: none
 - ORCID: Xianli Zeng, 0009-0008-6326-953X; Qinghua Zhou,

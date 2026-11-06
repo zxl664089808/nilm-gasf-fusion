@@ -1,6 +1,6 @@
-# Pre-submission status v0.3.2
+# Pre-submission status v0.3.3
 
-Date: 2026-10-30
+Date: 2026-11-06
 
 ## Target
 
@@ -28,10 +28,7 @@ Date: 2026-10-30
 
 ## Remaining author inputs
 
-1. The corresponding email address for Qinghua Zhou.
-2. Confirmation of whether the funding statement should remain "no external
-   funding," because Qinghua Zhou is assigned the Funding acquisition role.
-3. A public DOI-bearing archive URL, preferably a tagged Zenodo release.
+1. A public DOI-bearing archive URL, preferably a tagged Zenodo release.
 
 ## Technical work before submission
 

@@ -13,7 +13,7 @@ Changsha University of Science and Technology, Changsha 410114, China
 
 Qinghua Zhou
 
-Email: to be supplied by the corresponding author
+Email: zhouqinghua@csust.edu.cn
 
 ## ORCID
 
@@ -25,15 +25,11 @@ Email: to be supplied by the corresponding author
 - Funding: none.
 - Conflict of interest: none.
 
-The CRediT statement includes funding acquisition, while the funding statement
-says that no external funding was received. The authors should confirm that no
-grant statement is missing.
-
 ## CRediT statement
 
 - Xianli Zeng: methodology; investigation; data curation; formal analysis;
   visualization; writing-original draft.
 - Qinghua Zhou: conceptualization; supervision; project administration;
-  funding acquisition; validation; writing-review and editing.
+  validation; writing-review and editing.
 
 Both authors have confirmed this allocation.

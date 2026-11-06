@@ -55,9 +55,8 @@ integration into the same provenance-controlled repository.
 
 ## Remaining submission work
 
-1. Add the corresponding email and confirm the funding statement.
-2. Create a DOI-bearing repository archive.
-3. Convert the manuscript and vector figures to the current Electronics
+1. Create a DOI-bearing repository archive.
+2. Convert the manuscript and vector figures to the current Electronics
    template.
-4. Recheck every number against the final tagged repository revision.
-5. Upload the cover letter, manuscript, figures, and supplementary files.
+3. Recheck every number against the final tagged repository revision.
+4. Upload the cover letter, manuscript, figures, and supplementary files.
